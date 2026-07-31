@@ -3,472 +3,472 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>我的名字 — 个人主页</title>
-<style>
-  /* ========== 主题变量 ========== */
-  :root {
-    --bg: #fafaf9;
-    --bg-card: #ffffff;
-    --text: #1c1917;
-    --text-secondary: #57534e;
-    --accent: #6366f1;
-    --accent-soft: #eef2ff;
-    --border: #e7e5e4;
-    --shadow: 0 4px 24px rgba(0, 0, 0, .06);
-  }
-  [data-theme="dark"] {
-    --bg: #0c0a09;
-    --bg-card: #1c1917;
-    --text: #fafaf9;
-    --text-secondary: #a8a29e;
-    --accent: #818cf8;
-    --accent-soft: #312e81;
-    --border: #292524;
-    --shadow: 0 4px 24px rgba(0, 0, 0, .4);
-  }
-
-  * { margin: 0; padding: 0; box-sizing: border-box; }
-
-  html { scroll-behavior: smooth; }
-
-  body {
-    font-family: -apple-system, BlinkMacSystemFont, "PingFang SC",
-                 "Hiragino Sans GB", "Microsoft YaHei", "Segoe UI", sans-serif;
-    background: var(--bg);
-    color: var(--text);
-    line-height: 1.7;
-    transition: background .3s, color .3s;
-  }
-
-  /* ========== 导航栏 ========== */
-  nav {
-    position: fixed;
-    top: 0; left: 0; right: 0;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 16px 8vw;
-    background: color-mix(in srgb, var(--bg) 80%, transparent);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    border-bottom: 1px solid var(--border);
-    z-index: 100;
-  }
-  .logo { font-weight: 700; font-size: 1.1rem; letter-spacing: .5px; }
-  .nav-links { display: flex; gap: 28px; align-items: center; }
-  .nav-links a {
-    color: var(--text-secondary);
-    text-decoration: none;
-    font-size: .95rem;
-    transition: color .2s;
-  }
-  .nav-links a:hover { color: var(--accent); }
-
-  #theme-toggle {
-    border: 1px solid var(--border);
-    background: var(--bg-card);
-    color: var(--text);
-    width: 38px; height: 38px;
-    border-radius: 50%;
-    cursor: pointer;
-    font-size: 1rem;
-    transition: transform .2s;
-  }
-  #theme-toggle:hover { transform: rotate(20deg); }
-
-  /* ========== 首屏 Hero ========== */
-  .hero {
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    text-align: center;
-    padding: 0 6vw;
-    position: relative;
-    overflow: hidden;
-  }
-  /* 背景装饰光斑 */
-  .hero::before, .hero::after {
-    content: "";
-    position: absolute;
-    border-radius: 50%;
-    filter: blur(90px);
-    opacity: .35;
-    z-index: -1;
-  }
-  .hero::before {
-    width: 420px; height: 420px;
-    background: var(--accent);
-    top: -80px; left: -100px;
-    animation: float 9s ease-in-out infinite;
-  }
-  .hero::after {
-    width: 360px; height: 360px;
-    background: #f472b6;
-    bottom: -60px; right: -80px;
-    animation: float 11s ease-in-out infinite reverse;
-  }
-  @keyframes float {
-    0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(40px); }
-  }
-
-  .hero .tag {
-    display: inline-block;
-    padding: 6px 16px;
-    border-radius: 999px;
-    background: var(--accent-soft);
-    color: var(--accent);
-    font-size: .85rem;
-    font-weight: 600;
-    margin-bottom: 24px;
-  }
-  .hero h1 {
-    font-size: clamp(2.2rem, 6vw, 4rem);
-    line-height: 1.2;
-    margin-bottom: 20px;
-  }
-  .hero h1 .gradient {
-    background: linear-gradient(120deg, var(--accent), #f472b6);
-    -webkit-background-clip: text;
-    background-clip: text;
-    color: transparent;
-  }
-  .hero p {
-    max-width: 560px;
-    color: var(--text-secondary);
-    font-size: 1.1rem;
-    margin-bottom: 36px;
-  }
-  .btn-group { display: flex; gap: 16px; flex-wrap: wrap; justify-content: center; }
-  .btn {
-    padding: 13px 32px;
-    border-radius: 999px;
-    text-decoration: none;
-    font-weight: 600;
-    font-size: .95rem;
-    transition: transform .2s, box-shadow .2s;
-  }
-  .btn:hover { transform: translateY(-3px); }
-  .btn-primary {
-    background: var(--accent);
-    color: #fff;
-    box-shadow: 0 8px 20px color-mix(in srgb, var(--accent) 40%, transparent);
-  }
-  .btn-outline {
-    border: 1.5px solid var(--border);
-    color: var(--text);
-    background: var(--bg-card);
-  }
-
-  /* ========== 通用区块 ========== */
-  section { padding: 100px 8vw; max-width: 1100px; margin: 0 auto; }
-  .section-title {
-    font-size: 2rem;
-    margin-bottom: 8px;
-  }
-  .section-sub {
-    color: var(--text-secondary);
-    margin-bottom: 48px;
-  }
-
-  /* 滚动出现动画 */
-  .reveal {
-    opacity: 0;
-    transform: translateY(30px);
-    transition: opacity .7s ease, transform .7s ease;
-  }
-  .reveal.visible { opacity: 1; transform: none; }
-
-  /* ========== 关于我 ========== */
-  .about-grid {
-    display: grid;
-    grid-template-columns: 1fr 2fr;
-    gap: 48px;
-    align-items: center;
-  }
-  .avatar {
-    width: 100%;
-    aspect-ratio: 1;
-    border-radius: 24px;
-    background: linear-gradient(135deg, var(--accent), #f472b6);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 4rem;
-    color: #fff;
-    box-shadow: var(--shadow);
-  }
-  .about-text p { color: var(--text-secondary); margin-bottom: 16px; }
-
-  /* ========== 技能 ========== */
-  .skills-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-    gap: 20px;
-  }
-  .skill-card {
-    background: var(--bg-card);
-    border: 1px solid var(--border);
-    border-radius: 16px;
-    padding: 28px 24px;
-    transition: transform .25s, box-shadow .25s;
-  }
-  .skill-card:hover {
-    transform: translateY(-6px);
-    box-shadow: var(--shadow);
-  }
-  .skill-card .icon { font-size: 1.8rem; margin-bottom: 12px; }
-  .skill-card h3 { font-size: 1.05rem; margin-bottom: 6px; }
-  .skill-card p { color: var(--text-secondary); font-size: .9rem; }
-
-  /* ========== 项目 ========== */
-  .projects-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 24px;
-  }
-  .project-card {
-    background: var(--bg-card);
-    border: 1px solid var(--border);
-    border-radius: 20px;
-    overflow: hidden;
-    transition: transform .25s, box-shadow .25s;
-  }
-  .project-card:hover {
-    transform: translateY(-6px);
-    box-shadow: var(--shadow);
-  }
-  .project-cover {
-    height: 160px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 3rem;
-    color: #fff;
-  }
-  .project-body { padding: 24px; }
-  .project-body h3 { margin-bottom: 8px; }
-  .project-body p {
-    color: var(--text-secondary);
-    font-size: .92rem;
-    margin-bottom: 16px;
-  }
-  .project-tags { display: flex; gap: 8px; flex-wrap: wrap; }
-  .project-tags span {
-    font-size: .78rem;
-    padding: 4px 12px;
-    border-radius: 999px;
-    background: var(--accent-soft);
-    color: var(--accent);
-    font-weight: 600;
-  }
-
-  /* ========== 联系我 ========== */
-  .contact-cards {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 20px;
-  }
-  .contact-card {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 8px;
-    padding: 32px 20px;
-    background: var(--bg-card);
-    border: 1px solid var(--border);
-    border-radius: 16px;
-    text-decoration: none;
-    color: var(--text);
-    transition: transform .25s, border-color .25s;
-  }
-  .contact-card:hover {
-    transform: translateY(-4px);
-    border-color: var(--accent);
-  }
-  .contact-card .icon { font-size: 1.6rem; }
-  .contact-card .label { font-size: .85rem; color: var(--text-secondary); }
-
-  footer {
-    text-align: center;
-    padding: 40px 8vw;
-    color: var(--text-secondary);
-    font-size: .85rem;
-    border-top: 1px solid var(--border);
-  }
-
-  /* ========== 响应式 ========== */
-  @media (max-width: 720px) {
-    .about-grid { grid-template-columns: 1fr; }
-    .avatar { max-width: 240px; margin: 0 auto; }
-    .nav-links a:not(:last-of-type) { display: none; }
-  }
-</style>
+<title>玄机阁 · 命理天机</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='16' fill='%23080510'/%3E%3Ccircle cx='50' cy='50' r='40' fill='none' stroke='%23d4af37' stroke-width='2'/%3E%3Cpath d='M50 10a40 40 0 0 1 0 80 20 20 0 0 1 0-40 20 20 0 0 0 0-40z' fill='%23d4af37'/%3E%3Ccircle cx='50' cy='30' r='6' fill='%23080510'/%3E%3Ccircle cx='50' cy='70' r='6' fill='%23d4af37'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600;900&family=Ma+Shan+Zheng&family=ZCOOL+XiaoWei&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/lunar-javascript@1.7.3/lunar.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/0.160.0/three.min.js"></script>
 </head>
 <body>
 
-<!-- ================= 导航栏 ================= -->
+<div id="scrollProgress"></div>
+<canvas id="stars"></canvas>
+<div id="nebula"></div>
+<div id="runes"></div>
+<div id="fog">
+  <div class="fog-blob" style="width:70vw;height:55vh;top:8%;left:-12%"></div>
+  <div class="fog-blob" style="width:60vw;height:50vh;bottom:-8%;right:-10%"></div>
+</div>
+<div class="noise"></div>
+<div class="cursor"></div>
+<div class="cursor-dot"></div>
+
+<div id="casting">
+  <div class="cast-inner">
+    <svg viewBox="0 0 100 100" fill="none">
+      <circle cx="50" cy="50" r="46" stroke="#d4af37" stroke-width="1.5" stroke-dasharray="6 8"/>
+      <circle cx="50" cy="50" r="34" stroke="#f9efd8" stroke-width="1" stroke-dasharray="3 5" opacity=".5"/>
+      <path d="M50 20a30 30 0 0 1 0 60 15 15 0 0 1 0-30 15 15 0 0 0 0-30z" fill="#d4af37" opacity=".9"/>
+      <circle cx="50" cy="35" r="4" fill="#100904"/>
+      <circle cx="50" cy="65" r="4" fill="#d4af37"/>
+    </svg>
+    <p>推演天机<span class="dots"></span></p>
+  </div>
+</div>
+
 <nav>
-  <div class="logo">✦ 我的名字</div>
+  <a class="logo" href="#top">
+    <span class="logo-seal">玄</span>
+    <span class="logo-name">玄机阁</span>
+  </a>
   <div class="nav-links">
-    <a href="#about">关于</a>
-    <a href="#skills">技能</a>
-    <a href="#projects">项目</a>
-    <a href="#contact">联系</a>
-    <button id="theme-toggle" title="切换主题">🌙</button>
+    <a href="#bazi">八字排盘</a>
+    <a href="#ziwei">紫微斗数</a>
+    <a href="#tarot">塔罗占卜</a>
+    <a href="#meihua">梅花易数</a>
+    <a href="#qian">每日灵签</a>
   </div>
 </nav>
 
-<!-- ================= 首屏 ================= -->
-<header class="hero">
-  <span class="tag">👋 欢迎来到我的主页</span>
-  <!-- 修改：你的名字和一句话介绍 -->
-  <h1>你好，我是<span class="gradient">你的名字</span><br>一名热爱创造的开发者</h1>
-  <p>在这里写一段简短的自我介绍：你做什么、热爱什么、正在寻找什么样的机会。一两句话即可。</p>
-  <div class="btn-group">
-    <a class="btn btn-primary" href="#projects">查看我的作品</a>
-    <a class="btn btn-outline" href="#contact">联系我</a>
+<header class="hero" id="top">
+  <div class="compass">
+    <svg viewBox="0 0 600 600" fill="none">
+      <defs><path id="circlePath" d="M300,90 a210,210 0 1,1 -0.01,0"/></defs>
+      <g class="ring ring-1">
+        <circle cx="300" cy="300" r="288" stroke="#d4af37" stroke-width="1" opacity=".5"/>
+        <circle cx="300" cy="300" r="212" stroke="#d4af37" stroke-width="1" opacity=".32"/>
+        <text font-size="17" fill="#f9efd8" letter-spacing="14" opacity=".8" font-family="Noto Serif SC">
+          <textPath href="#circlePath">甲乙丙丁戊己庚辛壬癸 · 子丑寅卯辰巳午未申酉戌亥 · 乾坤震巽坎离艮兑 ·</textPath>
+        </text>
+      </g>
+      <g class="ring ring-2" font-size="30" fill="#f3d27a" opacity=".85">
+        <text x="300" y="68" text-anchor="middle">☰</text>
+        <text x="464" y="136" text-anchor="middle">☱</text>
+        <text x="532" y="300" text-anchor="middle">☲</text>
+        <text x="464" y="472" text-anchor="middle">☳</text>
+        <text x="300" y="540" text-anchor="middle">☵</text>
+        <text x="136" y="472" text-anchor="middle">☶</text>
+        <text x="68" y="308" text-anchor="middle">☷</text>
+        <text x="136" y="144" text-anchor="middle">☴</text>
+      </g>
+      <g class="ring ring-3">
+        <circle cx="300" cy="300" r="150" stroke="#f9efd8" stroke-width="1" stroke-dasharray="4 7" opacity=".4"/>
+        <circle cx="300" cy="300" r="110" stroke="#d4af37" stroke-width="1" stroke-dasharray="2 5" opacity=".5"/>
+      </g>
+      <g>
+        <path d="M300 210a90 90 0 0 1 0 180 45 45 0 0 1 0-90 45 45 0 0 0 0-90z" fill="#d4af37" opacity=".25"/>
+        <circle cx="300" cy="300" r="90" stroke="#d4af37" stroke-width="1.2" opacity=".7"/>
+        <circle cx="300" cy="255" r="10" fill="#d4af37" opacity=".5"/>
+        <circle cx="300" cy="345" r="10" fill="#d4af37" opacity=".2"/>
+      </g>
+    </svg>
   </div>
+
+  <p class="hero-kicker fade-in">天 机 有 数 · 命 理 无 玄</p>
+  <h1 class="hero-title" id="heroTitle">玄机阁</h1>
+  <p class="hero-sub fade-in">
+    一柱一干支，一命一乾坤。<br>
+    <em>八字</em>观五行旺衰 · <em>紫微</em>排十二星宫 · <em>塔罗</em>窥心中所惑 · <em>梅花</em>断一事吉凶<br>
+    四大秘术，尽在此阁。
+  </p>
+  <div class="hero-cta fade-in">
+    <a class="btn btn-gold hoverable" href="#bazi">立即排盘</a>
+    <a class="btn btn-ghost hoverable" href="#qian">求一支灵签</a>
+  </div>
+  <div class="hero-stats fade-in">
+    <div class="stat"><b data-count="60">0</b><span>甲子轮回</span></div>
+    <div class="stat"><b data-count="144">0</b><span>紫微星盘</span></div>
+    <div class="stat"><b data-count="78">0</b><span>塔罗牌阵</span></div>
+    <div class="stat"><b data-count="4096">0</b><span>易卦变化</span></div>
+  </div>
+  <div class="scroll-hint">向下探寻<i></i></div>
 </header>
 
-<!-- ================= 关于我 ================= -->
-<section id="about" class="reveal">
-  <h2 class="section-title">关于我</h2>
-  <p class="section-sub">About Me</p>
-  <div class="about-grid">
-    <!-- 可以把这个色块换成 <img src="你的照片.jpg" style="width:100%;border-radius:24px"> -->
-    <div class="avatar">😊</div>
-    <div class="about-text">
-      <p>第一段：详细介绍你自己 —— 你的背景、所在城市、目前在做的事情。</p>
-      <p>第二段：你的兴趣和价值观 —— 工作之余喜欢什么，什么让你觉得有意义。</p>
-      <p>第三段：你的目标 —— 希望在这份职业/领域里达成什么。</p>
+<!-- 八字排盘 -->
+<section id="bazi">
+  <div class="bg-glyph">命</div>
+  <div class="wrap">
+    <div class="sec-head fade-in">
+      <p class="sec-kicker">四 柱 八 字</p>
+      <h2 class="sec-title">探索 <b>你的命盘</b></h2>
+      <p class="sec-desc">输入生辰，以真天文历法（节气精确）推演四柱八字、五行分布与十年大运。</p>
+      <div class="divider"></div>
+    </div>
+
+    <div class="panel fade-in">
+      <form id="baziForm" class="form-grid">
+        <div class="field">
+          <label>出生年份</label>
+          <select id="inYear"></select>
+        </div>
+        <div class="field">
+          <label>出生月份</label>
+          <select id="inMonth"></select>
+        </div>
+        <div class="field">
+          <label>出生日</label>
+          <select id="inDay"></select>
+        </div>
+        <div class="field">
+          <label>出生时辰</label>
+          <select id="inHour">
+            <option value="-1">时辰不详（以午时论）</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>性别</label>
+          <select id="inGender">
+            <option value="male">乾造 · 男</option>
+            <option value="female">坤造 · 女</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>出生城市</label>
+          <input type="text" id="inCity" list="cityList" placeholder="例如：北京">
+          <datalist id="cityList">
+            <option value="北京"></option><option value="上海"></option>
+            <option value="广州"></option><option value="深圳"></option>
+            <option value="杭州"></option><option value="成都"></option>
+            <option value="重庆"></option><option value="西安"></option>
+            <option value="南京"></option><option value="武汉"></option>
+            <option value="苏州"></option><option value="天津"></option>
+          </datalist>
+        </div>
+        <div class="field" style="display:flex;align-items:flex-end">
+          <button type="submit" class="btn-cast hoverable" style="width:100%">开 盘</button>
+        </div>
+      </form>
+      <div class="form-foot">
+        <p class="form-note">※ 时辰越精确，命盘越准；未知时辰则以午时推算，仅供参考。</p>
+      </div>
+    </div>
+
+    <div id="result">
+      <div class="reveal-wrap" style="margin-top:56px">
+        <div class="pillars" id="pillars"></div>
+        <p class="master-line" id="masterLine"></p>
+        <div class="result-grid">
+          <div class="r-card">
+            <h3>五行能量</h3>
+            <div class="wx-viz">
+              <canvas id="wxRadar" width="260" height="260"></canvas>
+            </div>
+            <div class="wx-bars" id="wxBars"></div>
+            <div class="wx-verdict" id="wxVerdict"></div>
+          </div>
+          <div class="r-card">
+            <h3>十年大运</h3>
+            <div class="luck-viz"><canvas id="luckCurve" width="600" height="150"></canvas></div>
+            <div class="luck-list" id="luckList"></div>
+          </div>
+        </div>
+        <div class="r-card" style="margin-top:26px">
+          <h3>阁主批语</h3>
+          <div id="analysis"></div>
+          <p class="result-disclaimer">※ 以上排盘由真天文历法推演，解读内容仅供文化娱乐参考，不构成任何决策建议。命由己造，福自己求。</p>
+        </div>
+      </div>
     </div>
   </div>
 </section>
 
-<!-- ================= 技能 ================= -->
-<section id="skills" class="reveal">
-  <h2 class="section-title">我的技能</h2>
-  <p class="section-sub">Skills</p>
-  <div class="skills-grid">
-    <!-- 按需增删卡片，图标可用任意 emoji -->
-    <div class="skill-card">
-      <div class="icon">💻</div>
-      <h3>前端开发</h3>
-      <p>HTML / CSS / JavaScript，构建漂亮的界面</p>
+<!-- 紫微斗数 -->
+<section id="ziwei">
+  <div class="bg-glyph">星</div>
+  <div class="wrap">
+    <!-- 顶部标题：缩小退让，不抢主体 -->
+    <div class="sec-head sec-head--sub zw-head fade-in">
+      <p class="sec-kicker">北 斗 神 数</p>
+      <h2 class="sec-title">紫微斗数 <b>十二宫星盘</b></h2>
+      <div class="divider"></div>
     </div>
-    <div class="skill-card">
-      <div class="icon">⚙️</div>
-      <h3>后端开发</h3>
-      <p>Python / Node.js，编写可靠的服务</p>
-    </div>
-    <div class="skill-card">
-      <div class="icon">🎨</div>
-      <h3>设计</h3>
-      <p>Figma / Photoshop，兼顾美感与体验</p>
-    </div>
-    <div class="skill-card">
-      <div class="icon">🤖</div>
-      <h3>AI 应用</h3>
-      <p>用大模型和智能工具提升效率</p>
+
+    <!-- 主体：中心视觉 + 辅助信息 -->
+    <div class="zw-stage">
+
+      <!-- 中心偏左：大型星盘舞台 -->
+      <div class="zw-arena fade-in">
+        <div class="zw-tabs" id="zwTabs" style="display:none">
+          <button class="zw-tab active" data-pane="chart">本命星盘</button>
+          <button class="zw-tab" data-pane="bright">星曜亮度</button>
+          <button class="zw-tab" data-pane="daxian">大限流年</button>
+        </div>
+
+        <div class="zw-pane" id="zwPaneChart">
+          <div class="zw-chart-wrap">
+            <!-- 环形轨道装饰：十二宫星轨 -->
+            <div class="zw-orbit" aria-hidden="true">
+              <svg class="zo-ring zo-r1" viewBox="0 0 100 100"><circle cx="50" cy="50" r="49" fill="none" stroke="rgba(212,175,55,.28)" stroke-width=".4" stroke-dasharray="1.5 2.6"/></svg>
+              <svg class="zo-ring zo-r2" viewBox="0 0 100 100"><circle cx="50" cy="50" r="49" fill="none" stroke="rgba(212,175,55,.14)" stroke-width=".3" stroke-dasharray=".8 3.4"/></svg>
+              <div class="zo-nodes">
+                <i></i><i></i><i></i><i></i><i></i><i></i>
+                <i></i><i></i><i></i><i></i><i></i><i></i>
+              </div>
+              <span class="zo-star s1"></span><span class="zo-star s2"></span><span class="zo-star s3"></span>
+            </div>
+
+            <!-- 星盘本体（排盘后填充） -->
+            <div class="zw-chart" id="zwChart"></div>
+
+            <!-- 命盘待启：位于星盘下方 -->
+            <div class="zw-empty" id="zwEmpty">
+              <p class="ze-status">
+                <span class="ze-pulse"></span>
+                十二宫星轨已就位
+              </p>
+              <h3 class="ze-title">命盘待启</h3>
+              <button class="btn-cast hoverable zw-cta" id="zwCta">开 始 排 盘</button>
+              <p class="ze-note">※ 沿用上方八字出生资料，时辰不详以午时论</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="zw-pane" id="zwPaneBright" style="display:none"><div class="r-card zw-bright" id="zwBright"><p class="mh-empty" style="padding:30px 10px">先点「开始排盘」<br>此处将列出各主星亮度（庙旺陷）</p></div></div>
+        <div class="zw-pane" id="zwPaneDaxian" style="display:none"><div class="r-card" id="zwDaxian"><p class="mh-empty" style="padding:30px 10px">先点「开始排盘」<br>此处将列出十二宫大限走势</p></div></div>
+      </div>
+
+      <!-- 右侧：命盘启动面板 -->
+      <aside class="zw-side fade-in">
+        <div class="zw-launch" id="zwLaunch">
+          <div class="zl-head">
+            <span class="zl-seal">启</span>
+            <div class="zl-headtext">
+              <h3>命盘启动面板</h3>
+              <p>STAR CHART CONSOLE</p>
+            </div>
+            <span class="zl-light" id="zlLight"></span>
+          </div>
+
+          <div class="zl-body">
+            <div class="zl-row">
+              <span class="zl-key">出生日期</span>
+              <span class="zl-val" id="zwDate">— —</span>
+            </div>
+            <div class="zl-row">
+              <span class="zl-key">出生时间</span>
+              <span class="zl-val" id="zwTime">— —</span>
+            </div>
+            <div class="zl-row">
+              <span class="zl-key">性　　别</span>
+              <span class="zl-val" id="zwSex">— —</span>
+            </div>
+
+            <button class="btn-cast hoverable zl-btn" id="zwBtn">
+              <span class="zl-btn-orb"></span>启 动 排 盘
+            </button>
+
+            <div class="zw-side-result" id="zwSideResult" style="display:none">
+              <div class="zl-divider"><i></i></div>
+              <div class="wuxingju-badge" id="zwJu">— —</div>
+              <div class="zl-row">
+                <span class="zl-key">命宫主星</span>
+                <span class="zl-val gold" id="zwMingStar">—</span>
+              </div>
+              <div class="zl-row">
+                <span class="zl-key">身宫所在</span>
+                <span class="zl-val gold" id="zwShenPalace">—</span>
+              </div>
+              <div class="zl-row">
+                <span class="zl-key">命主星</span>
+                <span class="zl-val gold" id="zwMingZhu">—</span>
+              </div>
+            </div>
+
+            <p class="zl-foot">命由星布 · 运由己生</p>
+          </div>
+        </div>
+
+        <!-- 宫位详解：排盘后点击宫位浮现 -->
+        <div class="r-card zw-detail" id="zwDetail" style="display:none">
+          <h4 id="zdName"></h4>
+          <div class="zd-sub" id="zdSub"></div>
+          <p id="zdText"></p>
+        </div>
+      </aside>
+
     </div>
   </div>
 </section>
 
-<!-- ================= 项目 ================= -->
-<section id="projects" class="reveal">
-  <h2 class="section-title">精选项目</h2>
-  <p class="section-sub">Projects</p>
-  <div class="projects-grid">
-    <!-- 每个项目一张卡片，复制即可添加更多 -->
-    <div class="project-card">
-      <div class="project-cover" style="background: linear-gradient(135deg,#6366f1,#8b5cf6)">🚀</div>
-      <div class="project-body">
-        <h3>项目一</h3>
-        <p>一句话描述这个项目是做什么的、解决了什么问题。</p>
-        <div class="project-tags"><span>Vue</span><span>前端</span></div>
+<!-- 塔罗占卜 -->
+<section id="tarot">
+  <div class="bg-glyph">牌</div>
+  <div class="wrap">
+    <div class="sec-head fade-in">
+      <p class="sec-kicker">阿 卡 纳 之 眼</p>
+      <h2 class="sec-title">塔罗占卜 <b>圣三角牌阵</b></h2>
+      <p class="sec-desc">默念心中所问，从牌堆中凭直觉点选三张牌 —— 分别映照你的过去、现在与未来。</p>
+      <div class="divider"></div>
+    </div>
+
+    <div class="tarot-ask fade-in">
+      <div class="field">
+        <label>心中所问（选填）</label>
+        <input type="text" id="tarotQ" placeholder="例如：这段感情会走向何方？">
       </div>
     </div>
-    <div class="project-card">
-      <div class="project-cover" style="background: linear-gradient(135deg,#f472b6,#fb923c)">📱</div>
-      <div class="project-body">
-        <h3>项目二</h3>
-        <p>一句话描述这个项目是做什么的、解决了什么问题。</p>
-        <div class="project-tags"><span>Python</span><span>后端</span></div>
-      </div>
+
+    <div class="deck-zone fade-in" id="deckZone"></div>
+    <div class="btn-tarot fade-in">
+      <button class="btn btn-ghost hoverable" id="tarotReset" style="display:none">重新洗牌</button>
     </div>
-    <div class="project-card">
-      <div class="project-cover" style="background: linear-gradient(135deg,#34d399,#22d3ee)">🛠️</div>
-      <div class="project-body">
-        <h3>项目三</h3>
-        <p>一句话描述这个项目是做什么的、解决了什么问题。</p>
-        <div class="project-tags"><span>工具</span><span>开源</span></div>
+
+    <div class="tarot-result" id="tarotResult" style="display:none">
+      <div class="tarot-card-row" id="tarotRow"></div>
+      <div class="tarot-interpret" id="tarotInterpret"></div>
+    </div>
+  </div>
+</section>
+
+<!-- 梅花易数 -->
+<section id="meihua">
+  <div class="bg-glyph">卦</div>
+  <div class="wrap">
+    <div class="sec-head sec-head--sub fade-in">
+      <p class="sec-kicker">观 梅 占 数</p>
+      <h2 class="sec-title">梅花易数 <b>铜钱起卦</b></h2>
+      <p class="sec-desc">心念一事，掷铜钱六次，自下而上成卦。动爻所指，即事机之变。</p>
+      <div class="divider"></div>
+    </div>
+
+    <!-- 顶部：所问何事（轻量通栏，不抢主体） -->
+    <div class="mh-ask fade-in">
+      <span class="mh-ask-label">所问何事</span>
+      <input type="text" id="meihuaQ" placeholder="默念心中所惑，例如：这次跳槽是否顺利？">
+    </div>
+
+    <!-- 中部：左起卦 + 右解析 -->
+    <div class="mh-layout">
+      <!-- 起卦操作区（视觉核心：铜钱 + 掷币 + 成卦） -->
+      <div class="r-card mh-stage fade-in">
+        <p class="mh-stage-tag">起 卦</p>
+        <div class="mh-coin-panel">
+          <div class="coins" id="coins">
+            <div class="coin">
+              <div class="cn-face cn-front"><i class="c t">乾</i><i class="c r">隆</i><i class="c b">通</i><i class="c l">宝</i></div>
+              <div class="cn-face cn-back"><span class="cn-manchu">ᠶᡠᠸᠠᠨ</span></div>
+            </div>
+            <div class="coin">
+              <div class="cn-face cn-front"><i class="c t">乾</i><i class="c r">隆</i><i class="c b">通</i><i class="c l">宝</i></div>
+              <div class="cn-face cn-back"><span class="cn-manchu">ᠶᡠᠸᠠᠨ</span></div>
+            </div>
+            <div class="coin">
+              <div class="cn-face cn-front"><i class="c t">乾</i><i class="c r">隆</i><i class="c b">通</i><i class="c l">宝</i></div>
+              <div class="cn-face cn-back"><span class="cn-manchu">ᠶᡠᠸᠠᠨ</span></div>
+            </div>
+          </div>
+          <button class="btn-cast hoverable" id="tossBtn">掷 铜钱（第 1 爻）</button>
+        </div>
+        <div class="gua-lines" id="guaLines"></div>
+      </div>
+
+      <!-- 卦象解析区（最大视觉权重） -->
+      <div class="r-card mh-result fade-in" id="mhCard">
+        <div class="mh-empty" id="mhEmpty">
+          <span class="big">☵</span>
+          卦由心起<br>集中精神想着要问的事<br>连掷六次铜钱，卦象自成
+        </div>
+        <div id="mhResult" style="display:none">
+          <div class="gua-head">
+            <span class="gua-title" id="guaTitle"></span>
+            <span class="gua-symbol" id="guaSymbol"></span>
+          </div>
+          <p class="gua-sub" id="guaSub"></p>
+          <div class="gua-ci" id="guaCi"></div>
+          <p class="gua-jie" id="guaJie"></p>
+          <div class="gua-change" id="guaChange"></div>
+        </div>
       </div>
     </div>
   </div>
 </section>
 
-<!-- ================= 联系我 ================= -->
-<section id="contact" class="reveal">
-  <h2 class="section-title">联系我</h2>
-  <p class="section-sub">Contact</p>
-  <div class="contact-cards">
-    <!-- 把 href 和文字换成你的真实联系方式 -->
-    <a class="contact-card" href="mailto:you@example.com">
-      <span class="icon">📧</span>
-      <strong>邮箱</strong>
-      <span class="label">you@example.com</span>
-    </a>
-    <a class="contact-card" href="https://github.com/你的用户名" target="_blank">
-      <span class="icon">🐙</span>
-      <strong>GitHub</strong>
-      <span class="label">@你的用户名</span>
-    </a>
-    <a class="contact-card" href="#">
-      <span class="icon">💬</span>
-      <strong>微信</strong>
-      <span class="label">你的微信号</span>
-    </a>
-    <a class="contact-card" href="#">
-      <span class="icon">📝</span>
-      <strong>博客</strong>
-      <span class="label">我的博客地址</span>
-    </a>
+<!-- 每日灵签 -->
+<section id="qian">
+  <div class="bg-glyph">签</div>
+  <div class="wrap">
+    <div class="sec-head fade-in">
+      <p class="sec-kicker">观 音 灵 签</p>
+      <h2 class="sec-title">心诚则灵 <b>求一签</b></h2>
+      <p class="sec-desc">默念心中所惑，摇签筒，一支灵签自筒中跃出。一日一签，签签不同。</p>
+      <div class="divider"></div>
+    </div>
+
+    <div class="qian-stage">
+      <div class="tube-box fade-in">
+        <canvas id="tubeCanvas"></canvas>
+        <p class="tube-hint">点击签筒 · 摇签求运</p>
+        <button class="btn btn-gold hoverable" id="drawBtn" style="display:none">摇签求运</button>
+      </div>
+
+      <div class="r-card qian-card fade-in" id="qianCard">
+        <div class="qian-empty" id="qianEmpty">
+          <span class="big">☯</span>
+          签筒已备好<br>静心三息，默念所求<br>然后摇签
+        </div>
+        <div id="qianResult" style="display:none">
+          <span class="qian-grade" id="qGrade"></span>
+          <h3 class="qian-title" id="qTitle"></h3>
+          <div class="qian-poem" id="qPoem"></div>
+          <p class="qian-jie" id="qJie"></p>
+          <p class="result-disclaimer" id="qDisclaimer" style="display:none">※ 签文为传统文化演绎，仅供娱乐参考，一签一趣，不必尽信。</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 阁主箴言 -->
+<section id="about">
+  <div class="bg-glyph">道</div>
+  <div class="wrap">
+    <div class="sec-head fade-in">
+      <p class="sec-kicker">阁 主 箴 言</p>
+      <h2 class="sec-title">命由己造 <b>相由心生</b></h2>
+      <div class="divider"></div>
+    </div>
+    <div class="panel fade-in" style="text-align:center;padding:70px 32px">
+      <p style="font-size:clamp(17px,2.2vw,21px);line-height:2.7;letter-spacing:3px;max-width:780px;margin:0 auto">
+        命理者，观天地之气数，察人事之起伏。<br>
+        八字排定的是<b style="color:var(--orange-light)">先天之势</b>，走出来的才是<b style="color:var(--orange-light)">后天之命</b>。<br>
+        知命者不怨天，知己者不怨人。<br>
+        本阁所批，皆为引路之灯 —— 路，仍在君之足下。
+      </p>
+    </div>
   </div>
 </section>
 
 <footer>
-  © 2026 我的名字 · 用心构建 ❤️
+  <div class="f-logo">玄机阁</div>
+  <p>天干地支 · 五行生克 · 天人合一</p>
+  <p class="disclaimer">本站内容基于传统命理文化演绎，排盘算法由真天文历法驱动，解读仅供娱乐与文化体验，不构成任何决策依据。命由己造，福自己求。</p>
 </footer>
-
-<script>
-  // ===== 深色 / 浅色主题切换（记住用户选择）=====
-  const toggle = document.getElementById('theme-toggle');
-  const saved = localStorage.getItem('theme');
-  if (saved === 'dark' || (!saved && matchMedia('(prefers-color-scheme: dark)').matches)) {
-    document.documentElement.dataset.theme = 'dark';
-    toggle.textContent = '☀️';
-  }
-  toggle.addEventListener('click', () => {
-    const dark = document.documentElement.dataset.theme === 'dark';
-    document.documentElement.dataset.theme = dark ? '' : 'dark';
-    toggle.textContent = dark ? '🌙' : '☀️';
-    localStorage.setItem('theme', dark ? 'light' : 'dark');
-  });
-
-  // ===== 滚动到可视区域时淡入 =====
-  const observer = new IntersectionObserver(entries => {
-    entries.forEach(e => {
-      if (e.isIntersecting) {
-        e.target.classList.add('visible');
-        observer.unobserve(e.target);
-      }
-    });
-  }, { threshold: 0.12 });
-  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
-</script>
-
+<script src="js/main.js"></script>
 </body>
 </html>
